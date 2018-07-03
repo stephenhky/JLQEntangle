@@ -28,6 +28,20 @@ function reduced_density_matrix(bipartite_tensor, keep)
     return reddenmat
 end
 
+# Schmidt decomposition
+function schmidt_decomposition(bipartite_tensor)
+    tensor_shape = size(bipartite_tensor)
+    mindim = minimum(tensor_shape)
+
+    rho1 = reduced_density_matrix(bipartite_tensor, 1)
+    eigvals, eigvecs = eig(rho1)
+
+    coefmat0 = bipartite_tensor * eigvecs
+    modes = [Dict("weights"=>eigvals[i], "modeA"=>coefmat0[:, i]/norm(coefmat0[:, i]), "modeB"=>eigvecs[:, i])
+        for i in 1:mindim]
+    return modes
+end
+
 # testing
 reduced_density_matrix(tensor, 1)
 reduced_density_matrix(tensor, 1)
